@@ -1,0 +1,21 @@
+---https://platform.stratascratch.com/coding/10322-finding-user-purchases?code_type=1
+
+select fp.user_id from
+    (   select user_id, min(created_at) as first_purchase
+        from amazon_transactions
+        group by user_id
+    ) fp
+join ( select f.user_id, min(t.created_at) as second_purchase
+      from(
+            select user_id,min(created_at) as first_purchase
+            from amazon_transactions
+            group by user_id
+           ) f
+      join amazon_transactions t
+      on f.user_id = t.user_id
+      and t.created_at > f.first_purchase
+      group by f.user_id
+      ) sp
+ON fp.user_id = sp.user_id
+where sp.second_purchase <= fp.first_purchase + interval '7 days'
+order by fp.user_id;
