@@ -1,0 +1,32 @@
+CREATE TABLE Submissions (
+sub_id INT,
+parent_id INT
+);
+INSERT INTO Submissions (sub_id, parent_id) VALUES
+(1, NULL),
+(2, NULL),
+(1, NULL),
+(12, NULL),
+(3, 1),
+(5, 2),
+(3, 1),
+(4, 1),
+(9, 1),
+(10, 2),
+(6, 7);
+
+select * from Submissions;
+
+select distinct likes.parent_id as post_id ,count(*) as number_of_comments
+from (select sub_id from Submissions where parent_id is NULL) as likes
+join (select sub_id from Submissions where parent_id is not NULL) as comment
+on likes.parent_id= comment.parent_id
+group by comment.parent_id
+order by likes.parent_id;
+
+
+
+
+
+
+
